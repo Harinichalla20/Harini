@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Editor</title>
+  <style>
+    .card-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .controls {
+	margin-top: 40px;
+      margin-left: 20px;
+    }
+
+    .card {
+      width: 300px;
+      height: 500px;
+      border: 5px solid black;
+      margin: 10px ;
+      padding: 40px;
+      float: left;
+    }
+
+    .control-group {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card-container">
+  <div class="card" contenteditable="true" id="editable-card">
+    <h2>MAKE YOUR OWN CARD..</h2>
+    <p>SELECTING YOUR OWN STYLE.......</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label for="colorPicker">Choose text color:</label>
+      <input type="color" id="colorPicker">
+    </div>
+
+    <div class="control-group">
+      <label for="bgColorPicker">Choose background color:</label>
+      <input type="color" id="bgColorPicker">
+    </div>
+
+    <div class="control-group">
+      <label for="fontFamily">Choose font:</label>
+      <select id="fontFamily">
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Georgia">Georgia</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="textSize">Choose text size:</label>
+      <select id="textSize">
+        <option value="12">12</option>
+        <option value="14">14</option>
+        <option value="16">16</option>
+        <option value="18">18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <button onclick="undo()">Undo</button>
+      <button onclick="redo()">Redo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let undoStack = [];
+  let redoStack = [];
+
+  const card = document.getElementById('editable-card');
+  const colorPicker = document.getElementById('colorPicker');
+  const bgColorPicker = document.getElementById('bgColorPicker');
+  const fontFamilySelect = document.getElementById('fontFamily');
+  const textSizeSelect = document.getElementById('textSize');
+
+  card.addEventListener('input', function() {
+    saveState();
+  });
+
+  colorPicker.addEventListener('input', function() {
+    applyColor();
+    saveState();
+  });
+
+  bgColorPicker.addEventListener('input', function() {
+    applyBackgroundColor();
+    saveState();
+  });
+
+  fontFamilySelect.addEventListener('change', function() {
+    applyFontFamily();
+    saveState();
+  });
+
+  textSizeSelect.addEventListener('change', function() {
+    applyTextSize();
+    saveState();
+  });
+
+  function saveState() {
+    undoStack.push({
+      html: card.innerHTML,
+      color: card.style.color,
+      backgroundColor: card.style.backgroundColor,
+      fontFamily: card.style.fontFamily,
+      fontSize: card.style.fontSize
+    });
+    redoStack = [];
+  }
+
+  function undo() {
+    if (undoStack.length > 1) {
+      redoStack.push(undoStack.pop());
+      const prevState = undoStack[undoStack.length - 1];
+      updateCardState(prevState);
+    }
+  }
+
+  function redo() {
+    if (redoStack.length > 0) {
+      const nextState = redoStack.pop();
+      undoStack.push(nextState);
+      updateCardState(nextState);
+    }
+  }
+
+  function updateCardState(state) {
+    card.innerHTML = state.html;
+    card.style.color = state.color;
+    card.style.backgroundColor = state.backgroundColor;
+    card.style.fontFamily = state.fontFamily;
+    card.style.fontSize = state.fontSize;
+  }
+
+  function applyColor() {
+    const color = colorPicker.value;
+    card.style.color = color;
+  }
+
+  function applyBackgroundColor() {
+    const bgColor = bgColorPicker.value;
+    card.style.backgroundColor = bgColor;
+  }
+
+  function applyFontFamily() {
+    const fontFamily = fontFamilySelect.value;
+    card.style.fontFamily = fontFamily;
+  }
+
+  function applyTextSize() {
+    const textSize = textSizeSelect.value + 'px';
+    card.style.fontSize = textSize;
+  }
+</script>
+
+</body>
+</html>
