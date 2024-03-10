@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Web Page</title>
+<style>
+  .animated-text {
+    font-size: 20px;
+    text-align: center;
+    transition: font-size 0.5s ease-in-out;
+  }
+</style>
+</head>
+<body>
+
+<!-- a. Displaying of images with Custom animated effects -->
+<div id="image-container">
+  <img src="https://i.vimeocdn.com/video/579145026-83561ee5f1feb7fbfb0122483aec4407eeddbc00d601dca9fd1593d8457a408d-d_640x360.jpg" alt="Image 1" class="animated-image">
+  <img src="https://mixkit.imgix.net/videos/preview/mixkit-red-flowers-on-a-rosebush-seen-up-close-33845-0.jpg?q=80&auto=format%2Ccompress&w=460" alt="Image 2" class="animated-image">
+</div>
+
+<!-- b. Playing of selected video from the list of videos -->
+<div id="video-container">
+  <video id="video-player" controls>
+    <source src="video1.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <select id="video-select">
+    <option value="C:\Users\chall\OneDrive\Pictures\Saved Pictures\WhatsApp Video 2023-09-08 at 19.42.57.mp4">Video 1</option>
+    <option value="video1.mp4">Video 2</option>
+  </select>
+  <button id="play-button">Play</button>
+</div>
+
+<!-- c. Showing the animated text in increasing and decreasing font size -->
+<div id="text-container">
+  <p id="animated-text" class="animated-text">Animated Text</p>
+</div>
+
+<!-- d. Changing the size of the area in a web page using DIV tag -->
+<div id="resize-container">
+  <div id="resize-div" style="width: 200px; height: 200px; background-color: lightblue;"></div>
+  <input type="range" id="size-slider" min="100" max="500" value="200">
+</div>
+
+<!-- e. Hiding and Showing elements in a web page -->
+<div id="toggle-container">
+  <button id="toggle-button">Toggle Text</button>
+  <p id="toggle-text">Toggle me!</p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+  // a. Displaying of images with Custom animated effects
+  $(".animated-image").click(function(){
+    $(this).toggleClass("animated");
+  });
+
+  // b. Playing of selected video from the list of videos
+  $("#play-button").click(function(){
+    var selectedVideo = $("#video-select").val();
+    $("#video-player source").attr("src", selectedVideo);
+    $("#video-player")[0].load();
+    $("#video-player")[0].play();
+  });
+
+  // c. Showing the animated text in increasing and decreasing font size
+  var fontSize = 20;
+  var increasing = true;
+  setInterval(function(){
+    if (fontSize >= 30) increasing = false;
+    if (fontSize <= 20) increasing = true;
+    if (increasing) fontSize++;
+    else fontSize--;
+    $("#animated-text").css("font-size", fontSize + "px");
+  }, 500);
+
+  // d. Changing the size of the area in a web page using DIV tag
+  $("#size-slider").change(function(){
+    var newSize = $(this).val();
+    $("#resize-div").css({"width": newSize + "px", "height": newSize + "px"});
+  });
+
+  // e. Hiding and Showing elements in a web page
+  $("#toggle-button").click(function(){
+    $("#toggle-text").toggle();
+  });
+});
+</script>
+</body>
+</html>
